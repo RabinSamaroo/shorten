@@ -1,60 +1,8 @@
-// Handle DB connections and methods
-const admin = require("firebase-admin");
-const serviceAccount = require("./SERVICE_ACCOUNT.json");
-
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-});
-
-const db = admin.firestore().collection("urls");
-
-async function read(key) {
-  const document = await db.doc(key).get();
-  if (!document.exists) {
-    return { status: 404 };
-  } else {
-    return document.data();
-  }
-}
-
-async function create(key, value) {
-  const docRef = db.doc(key);
-  const document = await docRef.get();
-  if (!document.exists) {
-    await docRef.set({
-      key: key,
-      value: value,
-    });
-    return { status: "shortened url created" };
-  } else {
-    return { status: "document already exists" }; //Document already exists
-  }
-}
-
-async function update(key, value) {
-  const docRef = db.doc(key);
-  const document = await docRef.get();
-  if (!document.exists) {
-    return { status: "shortened url does not exist" };
-  } else {
-    await docRef.set({
-      key: key,
-      value: value,
-    });
-    return { status: "updated" };
-  }
-}
-/*
-async function delete_document(key) {
-  const document = await db.doc(key).delete();
-  return { status: "shortened url deleted" };
-}
-*/
-
 // Express server starts here ~~~~~~~~~~~~~~~~~~~~
-
+const db = require("./firebase.js")
 const express = require("express");
 const bodyParser = require("body-parser");
+const port = process.env.PORT || 8888;
 
 const app = express();
 
@@ -66,7 +14,7 @@ app.get("/", function (req, res) {
 });
 
 app.get("/:shortlink", function (req, res) {
-  read(req.params.shortlink).then(
+  db.read(req.params.shortlink).then(
     function (value) {
       res.send(JSON.stringify(value));
     },
@@ -77,7 +25,7 @@ app.get("/:shortlink", function (req, res) {
 });
 
 app.post("/:shortlink", function (req, res) {
-  create(req.params.shortlink, req.body.value).then(
+  db.create(req.params.shortlink, req.body.value).then(
     function (value) {
       res.send(JSON.stringify(value));
     },
@@ -88,7 +36,7 @@ app.post("/:shortlink", function (req, res) {
 });
 
 app.put("/:shortlink", function (req, res) {
-  update(req.params.shortlink, req.body.value).then(
+  db.update(req.params.shortlink, req.body.value).then(
     function (value) {
       res.send(JSON.stringify(value));
     },
@@ -100,7 +48,7 @@ app.put("/:shortlink", function (req, res) {
 
 /*
 app.delete("/:shortlink", function (req, res) {
-  delete_document(req.params.shortlink).then(
+  db.delete_document(req.params.shortlink).then(
     function (value) {
       res.send(JSON.stringify(value));
     },
@@ -110,4 +58,5 @@ app.delete("/:shortlink", function (req, res) {
   );
 });
 */
-app.listen(3000);
+app.listen(port);
+console.log("Listining on http://127.0.0.1:" + port);
