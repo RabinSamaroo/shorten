@@ -4,7 +4,8 @@
   "description": "simple url shortener",
   "main": "index.js",
   "scripts": {
-    "test": "node index.js"
+    "run": "node index.js",
+    "test": "mocha --timeout 10000"
   },
   "author": "Rabin Samaroo",
   "license": "ISC",
@@ -14,6 +15,7 @@
   },
   "devDependencies": {
     "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
     "mocha": "^8.2.1"
   }
 }

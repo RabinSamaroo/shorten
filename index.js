@@ -60,3 +60,6 @@ app.delete("/:shortlink", function (req, res) {
 */
 app.listen(port);
 console.log("Listining on http://127.0.0.1:" + port);
+
+
+module.exports = app; // for testing
