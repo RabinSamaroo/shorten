@@ -8,8 +8,21 @@ let expect = chai.expect;
 chai.use(chaiHttp);
 
 describe("Tests", () => {
-  describe("GET Document", () => {
-    it("Get a single document from the database", (done) => {
+  describe("Inital Test Suite", () => {
+    let data = { key: "test-key-1", value: "https://www.yahoo.com" };
+    it("Create a single document", (done) => {
+      chai
+        .request(server)
+        .post("/" + data.key)
+        .send(data)
+        .end((err, res) => {
+          expect(err).to.be.null;
+          expect(res).to.have.status(200);
+          expect(res.text.length).to.not.be.eql(0);
+          done();
+        });
+    });
+    it("Get a single document", (done) => {
       chai
         .request(server)
         .get("/g")
