@@ -1,5 +1,5 @@
 // Express server starts here ~~~~~~~~~~~~~~~~~~~~
-const db = require("./firebase.js")
+const db = require("./firebase.js");
 const express = require("express");
 const bodyParser = require("body-parser");
 const port = process.env.PORT || 8888;
@@ -46,7 +46,6 @@ app.put("/:shortlink", function (req, res) {
   );
 });
 
-/*
 app.delete("/:shortlink", function (req, res) {
   db.delete_document(req.params.shortlink).then(
     function (value) {
@@ -57,9 +56,8 @@ app.delete("/:shortlink", function (req, res) {
     }
   );
 });
-*/
+
 app.listen(port);
 console.log("Listining on http://127.0.0.1:" + port);
-
 
 module.exports = app; // for testing

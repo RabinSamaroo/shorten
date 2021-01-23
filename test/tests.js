@@ -1,6 +1,7 @@
 //Require the dev-dependencies
 let chai = require("chai");
 let chaiHttp = require("chai-http");
+const { before } = require("mocha");
 let server = require("../index");
 //let should = chai.should();
 let expect = chai.expect;
@@ -10,6 +11,15 @@ chai.use(chaiHttp);
 describe("Tests", () => {
   describe("Inital Test Suite", () => {
     let data = { key: "test-key-1", value: "https://www.yahoo.com" };
+    before("Setup", (done) => {
+      chai
+        .request(server)
+        .delete("/" + data.key)
+        .send(data)
+        .end((err, res) => {
+          done();
+        });
+    });
     it("Create a single document", (done) => {
       chai
         .request(server)
@@ -18,23 +28,70 @@ describe("Tests", () => {
         .end((err, res) => {
           expect(err).to.be.null;
           expect(res).to.have.status(200);
-          expect(res.text.length).to.not.be.eql(0);
+          expect(JSON.parse(res.text).status).to.be.eql(
+            "shortened url created"
+          );
           done();
         });
     });
-    it("Get a single document", (done) => {
+    it("Read a single document", (done) => {
       chai
         .request(server)
-        .get("/g")
+        .get("/" + data.key)
         .end((err, res) => {
-          //should.not.exist(err);
-          //res.shoud.have.status(200);
-          //res.body.should.be.a('array');
           expect(err).to.be.null;
           expect(res).to.have.status(200);
-          expect(res.text.length).to.not.be.eql(0);
+          expect(JSON.parse(res.text).data).to.not.be.eql(data.key);
           done();
         });
     });
+    it("Update a single document", (done) => {
+      data.value = "https://www.github.com";
+      chai
+        .request(server)
+        .put("/" + data.key)
+        .send(data)
+        .end((err, res) => {
+          expect(err).to.be.null;
+          expect(res).to.have.status(200);
+          expect(JSON.parse(res.text).status).to.be.eql("updated");
+          done();
+        });
+    });
+    it("Read an updated document", (done) => {
+      chai
+        .request(server)
+        .get("/" + data.key)
+        .end((err, res) => {
+          expect(err).to.be.null;
+          expect(res).to.have.status(200);
+          expect(JSON.parse(res.text).value).to.be.eql(data.value);
+          done();
+        });
+    });
+    it("Delete the document", (done) => {
+      chai
+        .request(server)
+        .delete("/" + data.key)
+        .send(data)
+        .end((err, res) => {
+          expect(err).to.be.null;
+          expect(res).to.have.status(200);
+          expect(JSON.parse(res.text).status).to.be.eql("deleted");
+          done();
+        });
+    });
+    it("Confirm document is deleted", (done) => {
+      chai
+        .request(server)
+        .get("/" + data.key)
+        .end((err, res) => {
+          expect(err).to.be.null;
+          expect(res).to.have.status(200);
+          expect(JSON.parse(res.text).status).to.be.eql(404);
+          done();
+        });
+ 
+    })
   });
 });

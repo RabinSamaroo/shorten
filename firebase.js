@@ -45,9 +45,8 @@ module.exports.update = async function update(key, value) {
     return { status: "updated" };
   }
 };
-/*
+
 module.exports.delete_document = async function delete_document(key) {
   const document = await db.doc(key).delete();
-  return { status: "shortened url deleted" };
-}
-*/
+  return { status: "deleted" };
+};
