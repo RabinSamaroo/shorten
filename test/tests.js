@@ -29,7 +29,7 @@ describe("Tests", () => {
           expect(err).to.be.null;
           expect(res).to.have.status(200);
           expect(JSON.parse(res.text).status).to.be.eql(
-            "shortened url created"
+            201
           );
           done();
         });
@@ -54,7 +54,7 @@ describe("Tests", () => {
         .end((err, res) => {
           expect(err).to.be.null;
           expect(res).to.have.status(200);
-          expect(JSON.parse(res.text).status).to.be.eql("updated");
+          expect(JSON.parse(res.text).status).to.be.eql(200);
           done();
         });
     });
@@ -65,7 +65,7 @@ describe("Tests", () => {
         .end((err, res) => {
           expect(err).to.be.null;
           expect(res).to.have.status(200);
-          expect(JSON.parse(res.text).value).to.be.eql(data.value);
+          expect(JSON.parse(res.text).data.value).to.be.eql(data.value);
           done();
         });
     });
@@ -77,7 +77,7 @@ describe("Tests", () => {
         .end((err, res) => {
           expect(err).to.be.null;
           expect(res).to.have.status(200);
-          expect(JSON.parse(res.text).status).to.be.eql("deleted");
+          expect(JSON.parse(res.text).status).to.be.eql(200);
           done();
         });
     });

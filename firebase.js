@@ -12,9 +12,9 @@ const db = admin.firestore().collection(collection);
 module.exports.read = async function read(key) {
   const document = await db.doc(key).get();
   if (!document.exists) {
-    return { status: 404 };
+    return { status: 404 }; // Document not found
   } else {
-    return document.data();
+    return {status: 200, data: document.data()}; // Document found
   }
 };
 
@@ -26,9 +26,9 @@ module.exports.create = async function create(key, value) {
       key: key,
       value: value,
     });
-    return { status: "shortened url created" };
+    return { status: 201 }; // Document created 
   } else {
-    return { status: "document already exists" }; //Document already exists
+    return { status: 409 }; // Document already exists
   }
 };
 
@@ -36,17 +36,17 @@ module.exports.update = async function update(key, value) {
   const docRef = db.doc(key);
   const document = await docRef.get();
   if (!document.exists) {
-    return { status: "shortened url does not exist" };
+    return { status: 404 }; // Document does not exist
   } else {
     await docRef.set({
       key: key,
       value: value,
     });
-    return { status: "updated" };
+    return { status: 200 }; // Document updated
   }
 };
 
 module.exports.delete_document = async function delete_document(key) {
   const document = await db.doc(key).delete();
-  return { status: "deleted" };
+  return { status: 200 }; // Document deleted
 };
