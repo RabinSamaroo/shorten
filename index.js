@@ -9,14 +9,13 @@ const app = express();
 app.use(bodyParser.json());
 app.use(express.static("public"));
 
-app.get("/", function (req, res) {
-  res.send("Hello World");
-});
-
 app.get("/:shortlink", function (req, res) {
+  const reqType = req.headers["content-type"]
   db.read(req.params.shortlink).then(
-    function (value) {
-      res.send(JSON.stringify(value));
+    function (doc) {
+      reqType == "application/json" ? // Handle json req types
+      res.send(doc) :
+      res.redirect(doc.data.value)
     },
     function (error) {
       console.log(error);
