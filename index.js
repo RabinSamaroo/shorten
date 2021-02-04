@@ -10,7 +10,7 @@ app.use(bodyParser.json());
 app.use(express.static("public"));
 
 app.get("/:shortlink", function (req, res) {
-  const reqType = req.headers["content-type"]
+  const reqType = req.headers["accept"]
   db.read(req.params.shortlink).then(
     function (doc) {
       reqType == "application/json" ? // Handle json req types
