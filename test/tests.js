@@ -23,7 +23,7 @@ describe("Tests", () => {
     it("Create a single document", (done) => {
       chai
         .request(server)
-        .post("/" + data.key)
+        .post("/new")
         .send(data)
         .end((err, res) => {
           expect(err).to.be.null;
@@ -38,6 +38,7 @@ describe("Tests", () => {
       chai
         .request(server)
         .get("/" + data.key)
+        .set("accept", "application/json")
         .end((err, res) => {
           expect(err).to.be.null;
           expect(res).to.have.status(200);
@@ -62,6 +63,7 @@ describe("Tests", () => {
       chai
         .request(server)
         .get("/" + data.key)
+        .set("accept", "application/json")
         .end((err, res) => {
           expect(err).to.be.null;
           expect(res).to.have.status(200);
@@ -85,6 +87,7 @@ describe("Tests", () => {
       chai
         .request(server)
         .get("/" + data.key)
+        .set("accept", "application/json")
         .end((err, res) => {
           expect(err).to.be.null;
           expect(res).to.have.status(200);
