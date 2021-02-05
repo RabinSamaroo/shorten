@@ -1,5 +1,5 @@
 const db = require("./firebase.js");
-const nanoid = require("nanoid").nanoid;
+const { nanoid } = require("nanoid");
 const express = require("express");
 const bodyParser = require("body-parser");
 
