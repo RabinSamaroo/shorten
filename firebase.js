@@ -26,7 +26,7 @@ module.exports.create = async function create(key, value) {
       key: key,
       value: value,
     });
-    return { status: 201, data: {} }; // Document created
+    return { status: 201, data: {key: key, value: value} }; // Document created
   } else {
     return { status: 409, data: {} }; // Document already exists
   }

@@ -1,8 +1,11 @@
-// Express server starts here ~~~~~~~~~~~~~~~~~~~~
 const db = require("./firebase.js");
+const nanoid = require("nanoid").nanoid;
 const express = require("express");
 const bodyParser = require("body-parser");
+
 const port = process.env.PORT || 8888;
+const RANDOM_LENGTH = 6;
+const VALIDATOR = new RegExp("^[A-Za-z0-9_-]{1,32}$");
 
 const app = express();
 
@@ -10,12 +13,12 @@ app.use(bodyParser.json());
 app.use(express.static("public"));
 
 app.get("/:shortlink", function (req, res) {
-  const reqType = req.headers["accept"]
+  const reqType = req.headers["accept"];
   db.read(req.params.shortlink).then(
     function (doc) {
-      reqType == "application/json" ? // Handle json req types
-      res.send(doc) :
-      res.redirect(doc.data.value)
+      reqType == "application/json" // Handle json req types
+        ? res.send(doc)
+        : res.redirect(doc.data.value);
     },
     function (error) {
       console.log(error);
@@ -23,15 +26,18 @@ app.get("/:shortlink", function (req, res) {
   );
 });
 
-app.post("/:shortlink", function (req, res) {
-  db.create(req.params.shortlink, req.body.value).then(
-    function (value) {
-      res.send(JSON.stringify(value));
-    },
-    function (error) {
-      console.log(error);
-    }
-  );
+app.post("/new", function (req, res) {
+  const key = req.body.key || nanoid(RANDOM_LENGTH); // Check for key or randomize
+  !VALIDATOR.test(key) // Valid test
+    ? res.send(JSON.stringify({ status: 400, data: {} })) // Key is not valid
+    : db.create(key, req.body.value).then(
+        function (value) {
+          res.send(JSON.stringify(value));
+        },
+        function (error) {
+          console.log(error);
+        }
+      );
 });
 
 app.put("/:shortlink", function (req, res) {
