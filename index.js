@@ -12,7 +12,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(express.static("public"));
 
-app.get("/:shortlink", function (req, res) {
+app.get("/:shortlink([A-Za-z0-9_-]{1,32})", function (req, res) {
   const reqType = req.headers["accept"];
   db.read(req.params.shortlink).then(
     function (doc) {
@@ -27,6 +27,7 @@ app.get("/:shortlink", function (req, res) {
 });
 
 app.post("/new", function (req, res) {
+  //TODO validate inputs
   const key = req.body.key || nanoid(RANDOM_LENGTH); // Check for key or randomize
   !VALIDATOR.test(key) // Valid test
     ? res.send(JSON.stringify({ status: 400, data: {} })) // Key is not valid
