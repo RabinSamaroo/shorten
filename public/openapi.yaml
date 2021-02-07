@@ -1,0 +1,221 @@
+openapi: 3.0.2
+info:
+  title: Shorten API
+  description: Shorten any url with an optional custom suffix.
+  version: "0.1"
+servers:
+  - url: http://127.0.0.1:8888
+    description: Local Server
+components:
+  schemas:
+    Data:
+      type: object
+      properties:
+        key:
+          type: string
+          minLength: 1
+          maxLength: 32
+          pattern: "^[A-Za-z0-9-_]{1,32}$"
+        value:
+          type: string
+          format: uri
+    ServerResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+        msg:
+          type: string
+        data:
+          $ref: "#/components/schemas/Data"
+    Webpage:
+      type: string
+      format: html
+      example: "<html>...</html>"
+
+  examples:
+    RecordCreated:
+      summary: Record created
+      value:
+        status: 201
+        message: record created
+        data:
+          key: yah
+          value: https://www.yahoo.ca
+    RecordAlreadyExists:
+      summary: Record already exists
+      value:
+        status: 409
+        message: record already created
+        data:
+          key: yah
+          value: https://www.yahoo.ca
+    GetRecord:
+      summary: OK
+      value:
+        status: 200
+        message: record found
+        data:
+          key: tail
+          value: https://blog.tailwindcss.com/tailwindcss-v2
+    RecordNotFound:
+      summary: Record not found
+      value:
+        status: 404
+        message: record not found
+        data: {}
+    RecordUpdated:
+      summary: Record updated
+      value:
+        status: 200
+        message: record updated
+        data:
+          key: thisIsAKey
+          value: https://www.updatedURL.com
+    RecordDeleted:
+      summary: Record deleted
+      value:
+        status: 200
+        message: record deleted
+        data: {}
+  parameters:
+    Key:
+      name: key
+      in: path
+      required: true
+      description: Key associated with destination value in server
+      schema:
+        type: string
+        minLength: 1
+        maxLength: 32
+        pattern: "^[A-Za-z0-9-_]{1,32}$"
+
+paths:
+  /new:
+    post:
+      summary: Create a new record form a json request
+      description: Only accepts json requests, tries to create a new record with specified key and responds with status.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - key
+                - value
+              allOf:
+                - $ref: "#/components/schemas/Data"
+      responses:
+        "201":
+          description: Record created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerResponse"
+              examples:
+                RecordCreated:
+                  $ref: "#/components/examples/RecordCreated"
+        "409":
+          description: Record specified key already exists, no record was creted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerResponse"
+              examples:
+                RecordAlreadyExists:
+                  $ref: "#/components/examples/RecordAlreadyExists"
+  /{key}:
+    get:
+      summary: Responds with json or redirect based on accept header
+      description: If the accept header is json, then the server will respond with a json object. Any other accept headers are redirected to the value URL.
+      parameters:
+        - $ref: "#/components/parameters/Key"
+      responses:
+        "200":
+          description: If the accept header is json, then the server will respond with a json object. Any other accept headers are redirected to the value URL.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerResponse"
+              examples:
+                OK:
+                  $ref: "#/components/examples/GetRecord"
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/Webpage"
+        "404":
+          description: Document with specified key not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerResponse"
+              examples:
+                Not Found:
+                  $ref: "#/components/examples/RecordNotFound"
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/Webpage"
+
+    put:
+      summary: Update a record from a json request
+      description: Document is updated based on key parameter in path and value provided in json
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - value
+              allOf:
+                - $ref: "#/components/schemas/Data"
+
+            examples:
+              Update Body Without Key:
+                value:
+                  value: https://www.github.com/
+              Update Body With Key:
+                value:
+                  key: someKey
+                  value: https://www.gmail.com/
+
+      parameters:
+        - $ref: "#/components/parameters/Key"
+
+      responses:
+        "200":
+          description: Record updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerResponse"
+              examples:
+                Record Updated:
+                  $ref: "#/components/examples/RecordUpdated"
+        "404":
+          description: Document with specified key not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerResponse"
+              examples:
+                Not Found:
+                  $ref: "#/components/examples/RecordNotFound"
+
+    delete:
+      summary: Delete a record from a json request
+      description: Deletes a document based on key parameter in path. Always returns 200 since it does not check to see if the record exists first
+
+      parameters:
+        - $ref: "#/components/parameters/Key"
+
+      responses:
+        "200":
+          description: Record Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServerResponse"
+              examples:
+                Record Deleted:
+                  $ref: "#/components/examples/RecordDeleted"
