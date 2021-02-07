@@ -826,9 +826,8 @@
       fetch(url, options)
         .then((response) => response.json())
         .then((responseBody) => {
-          console.log(responseBody);
-          elementToShow = responseBody.status == 201 ? check : fail;
-          responseKey = responseBody.data.key;
+          const elementToShow = responseBody.status == 201 ? check : fail;
+          const responseKey = responseBody.data.key;
 
           spinner.classList.add("hidden");
           submitButton.classList.remove("cursor-wait");
