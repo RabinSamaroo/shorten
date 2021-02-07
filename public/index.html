@@ -301,6 +301,12 @@
                               placeholder="https://www.google.com/"
                             />
                           </div>
+                          <p
+                            class="hidden mt-2 text-sm text-red-600"
+                            id="value-error"
+                          >
+                            This must be a valid HTTP url.
+                          </p>
                         </div>
 
                         <div>
@@ -333,6 +339,13 @@
                               placeholder="JanesFlowers"
                             />
                           </div>
+                          <p
+                            class="hidden mt-2 text-sm text-red-600"
+                            id="key-error"
+                          >
+                            This only contain alphanumeric characters, dash and
+                            underscore.
+                          </p>
                         </div>
 
                         <div>
@@ -686,6 +699,8 @@
   </script>
   <script>
     const submitButton = document.getElementById("submit");
+    const VALIDATOR = new RegExp("^[A-Za-z0-9_-]{1,32}$");
+
     function isValidHttpUrl(string) {
       let url;
 
@@ -699,12 +714,36 @@
     }
 
     async function createShortURL() {
-      const key = document.getElementById("custom-url").value;
-      const value = document.getElementById("long-url").value;
+      const keyInput = document.getElementById("custom-url");
+      const valueInput = document.getElementById("long-url");
+      const key = keyInput.value;
+      const value = valueInput.value;
+
+      const keyError = document.getElementById("key-error");
+      const valueError = document.getElementById("value-error");
+
       const spinner = document.getElementById("loading-spinner");
       const check = document.getElementById("loading-check");
       const fail = document.getElementById("loading-fail");
-      // TODO Validation
+
+      // Validation
+      const isKeyValid = VALIDATOR.test(key);
+      const isValueValid = isValidHttpUrl(value);
+
+      keyInput.classList.remove("border-red-300");
+      keyError.classList.add("hidden");
+      if (!isKeyValid) {
+        keyInput.classList.add("border-red-300");
+        keyError.classList.remove("hidden");
+      }
+
+      valueInput.classList.remove("border-red-300");
+      valueError.classList.add("hidden");
+      if (!isValueValid) {
+        valueInput.classList.add("border-red-300");
+        valueError.classList.remove("hidden");
+      }
+      if (!isValueValid || !isKeyValid) return;
 
       // Loading Spinner
       submitButton.disabled = true;
@@ -712,7 +751,6 @@
       spinner.classList.remove("hidden");
 
       // API Call
-
       const url = window.location.href + "new";
       const options = {
         method: "POST",
@@ -726,7 +764,6 @@
       };
 
       fetch(url, options).then((response) => {
-        console.log(response.status);
         elementToShow = response.status == 200 ? check : fail;
         spinner.classList.add("hidden");
         submitButton.classList.remove("cursor-wait");
@@ -734,7 +771,7 @@
         setTimeout(function () {
           elementToShow.classList.add("hidden");
           submitButton.disabled = false;
-        }, 1500);
+        }, 3000);
       });
     }
 
