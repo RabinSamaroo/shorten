@@ -284,7 +284,7 @@
                   class="bg-white sm:max-w-md sm:w-full sm:mx-auto sm:rounded-lg sm:overflow-hidden"
                 >
                   <div class="px-4 py-8 sm:px-10">
-                    <div class="mt-6">
+                    <div class="my-4">
                       <div class="space-y-6">
                         <div>
                           <label
@@ -681,6 +681,7 @@
     </div>
   </body>
   <script>
+    // Burger Bar Functionality
     const mobileMenu = document.getElementById("mobile-menu");
     const mobileBurger = document.getElementById("mobile-menu-button");
     let menuStateOpen = false;
@@ -696,8 +697,8 @@
         menuStateOpen = false;
       }
     });
-  </script>
-  <script>
+
+    // Validation and Fetch
     const submitButton = document.getElementById("submit");
     const VALIDATOR = new RegExp("^[A-Za-z0-9_-]{1,32}$");
 
