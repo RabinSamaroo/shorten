@@ -24,6 +24,7 @@ components:
       properties:
         status:
           type: integer
+          format: http-response-code
         msg:
           type: string
         data:
@@ -95,6 +96,7 @@ paths:
     post:
       summary: Create a new record form a json request
       description: Only accepts json requests, tries to create a new record with specified key and responds with status.
+
       requestBody:
         required: true
         content:
@@ -105,6 +107,7 @@ paths:
                 - value
               allOf:
                 - $ref: "#/components/schemas/Data"
+
       responses:
         "201":
           description: Record created
@@ -128,8 +131,10 @@ paths:
     get:
       summary: Responds with json or redirect based on accept header
       description: If the accept header is json, then the server will respond with a json object. Any other accept headers are redirected to the value URL.
+
       parameters:
         - $ref: "#/components/parameters/Key"
+
       responses:
         "200":
           description: If the accept header is json, then the server will respond with a json object. Any other accept headers are redirected to the value URL.
