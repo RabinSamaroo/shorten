@@ -848,6 +848,8 @@
       submitButton.disabled = true;
       submitButton.classList.add("cursor-wait");
       spinner.classList.remove("hidden");
+      shortlinkCreatedMessage.classList.add("hidden");
+      shortlinkErrorMessage.classList.add("hidden");
 
       // API Call
       const url = "http://127.0.0.1:8888/new";
@@ -877,8 +879,8 @@
               copyToClipboard("http://127.0.0.1:8888/" + responseKey)
             );
             shortlinkCreatedMessage.classList.remove("hidden");
-          } else if(responseBody.status == 409) {
-            shortlinkErrorMessage.classList.remove("hidden")
+          } else if (responseBody.status == 409) {
+            shortlinkErrorMessage.classList.remove("hidden");
           }
 
           setTimeout(function () {
