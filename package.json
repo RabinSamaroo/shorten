@@ -12,7 +12,8 @@
   "dependencies": {
     "express": "^4.17.1",
     "firebase-admin": "^9.4.2",
-    "nanoid": "^3.1.12"
+    "nanoid": "^3.1.12",
+    "swagger-ui-express": "^4.1.6"
   },
   "devDependencies": {
     "chai": "^4.2.0",

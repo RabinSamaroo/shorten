@@ -9,6 +9,10 @@ const VALIDATOR = new RegExp("^[A-Za-z0-9_-]{1,32}$");
 
 const app = express();
 
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./public/docs/openapi.json');
+app.use('/docs/', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
+
 app.use(bodyParser.json());
 app.use(express.static("public"));
 
