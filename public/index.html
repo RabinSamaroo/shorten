@@ -410,6 +410,50 @@
                             </svg>
                           </button>
                         </div>
+                        <!-- This example requires Tailwind CSS v2.0+ -->
+                        <div
+                          id="created-message"
+                          class="hidden rounded-md bg-blue-50 p-4"
+                        >
+                          <div class="flex">
+                            <div class="ml-3 flex-1 md:flex md:justify-between">
+                              <p class="text-sm text-blue-700">
+                                Created Shortlink
+                              </p>
+                              <div class="flex">
+                                <p class="mt-3 text-sm md:mt-0 md:ml-6">
+                                  <button
+                                    id="shortlink-copy"
+                                    class="whitespace-nowrap font-medium text-blue-700 hover:text-blue-600"
+                                  >
+                                    Copy
+                                  </button>
+                                </p>
+                                <button
+                                  id="shortlink-dismiss"
+                                  href="#"
+                                  class="whitespace-nowrap font-medium text-blue-700 hover:text-blue-600 ml-3"
+                                >
+                                  <span class="sr-only">Dismiss</span>
+                                  <!-- Heroicon name: solid/x -->
+                                  <svg
+                                    class="h-5 w-5"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 20 20"
+                                    fill="currentColor"
+                                    aria-hidden="true"
+                                  >
+                                    <path
+                                      fill-rule="evenodd"
+                                      d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                      clip-rule="evenodd"
+                                    />
+                                  </svg>
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -700,6 +744,8 @@
 
     // Validation and Fetch
     const submitButton = document.getElementById("submit");
+    const shortlinkDismiss = document.getElementById("shortlink-dismiss");
+    const shortlinkCreatedMessage = document.getElementById("created-message");
     const VALIDATOR = new RegExp("^[A-Za-z0-9_-]{1,32}$");
 
     function isValidHttpUrl(string) {
@@ -714,6 +760,16 @@
       return url.protocol === "http:" || url.protocol === "https:";
     }
 
+    function copyToClipboard(text) {
+      var dummy = document.createElement("textarea");
+      document.body.appendChild(dummy);
+      dummy.value = text;
+      dummy.select();
+      dummy.setSelectionRange(0, 99999);
+      document.execCommand("copy");
+      document.body.removeChild(dummy);
+    }
+
     async function createShortURL() {
       const keyInput = document.getElementById("custom-url");
       const valueInput = document.getElementById("long-url");
@@ -726,6 +782,8 @@
       const spinner = document.getElementById("loading-spinner");
       const check = document.getElementById("loading-check");
       const fail = document.getElementById("loading-fail");
+
+      const shortlinkCopy = document.getElementById("shortlink-copy");
 
       // Validation
       const isKeyValid = VALIDATOR.test(key);
@@ -752,7 +810,7 @@
       spinner.classList.remove("hidden");
 
       // API Call
-      const url = window.location.href + "new";
+      const url = "http://127.0.0.1:8888/new";
       const options = {
         method: "POST",
         headers: {
@@ -769,13 +827,24 @@
         spinner.classList.add("hidden");
         submitButton.classList.remove("cursor-wait");
         elementToShow.classList.remove("hidden");
+        if (response.status == 200) {
+          shortlinkCopy.addEventListener(
+            "click",
+            copyToClipboard("http://127.0.0.1:8888/" + key)
+          );
+          shortlinkCreatedMessage.classList.remove("hidden");
+        }
+
         setTimeout(function () {
           elementToShow.classList.add("hidden");
           submitButton.disabled = false;
-        }, 3000);
+        }, 2000);
       });
     }
 
     submitButton.addEventListener("click", createShortURL);
+    shortlinkDismiss.addEventListener("click", function () {
+      shortlinkCreatedMessage.classList.add("hidden");
+    });
   </script>
 </html>
