@@ -298,7 +298,7 @@
                               name="long-url"
                               id="long-url"
                               class="border px-3 py-2 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-                              placeholder="https://www.google.com/"
+                              placeholder="https://www.yelp.ca/biz/jane-flowers-toronto"
                             />
                           </div>
                           <p
@@ -315,7 +315,7 @@
                               for="custom-url"
                               class="block text-sm font-medium text-gray-700"
                             >
-                              URL Branding
+                              URL Suffix
                             </label>
 
                             <span
@@ -343,8 +343,8 @@
                             class="hidden mt-2 text-sm text-red-600"
                             id="key-error"
                           >
-                            This only contain alphanumeric characters, dash and
-                            underscore.
+                            This only contain alphanumeric characters, dashs and
+                            underscores.
                           </p>
                         </div>
 
@@ -746,7 +746,7 @@
     const submitButton = document.getElementById("submit");
     const shortlinkDismiss = document.getElementById("shortlink-dismiss");
     const shortlinkCreatedMessage = document.getElementById("created-message");
-    const VALIDATOR = new RegExp("^[A-Za-z0-9_-]{1,32}$");
+    const VALIDATOR = new RegExp("^[A-Za-z0-9_-]{0,32}$");
 
     function isValidHttpUrl(string) {
       let url;
@@ -822,24 +822,30 @@
         }),
       };
 
-      fetch(url, options).then((response) => {
-        elementToShow = response.status == 200 ? check : fail;
-        spinner.classList.add("hidden");
-        submitButton.classList.remove("cursor-wait");
-        elementToShow.classList.remove("hidden");
-        if (response.status == 200) {
-          shortlinkCopy.addEventListener(
-            "click",
-            copyToClipboard("http://127.0.0.1:8888/" + key)
-          );
-          shortlinkCreatedMessage.classList.remove("hidden");
-        }
+      //TODO handle 409 error message
+      fetch(url, options)
+        .then((response) => response.json())
+        .then((responseBody) => {
+          console.log(responseBody);
+          elementToShow = responseBody.status == 201 ? check : fail;
+          responseKey = responseBody.data.key;
 
-        setTimeout(function () {
-          elementToShow.classList.add("hidden");
-          submitButton.disabled = false;
-        }, 2000);
-      });
+          spinner.classList.add("hidden");
+          submitButton.classList.remove("cursor-wait");
+          elementToShow.classList.remove("hidden");
+          if (responseBody.status == 201) {
+            shortlinkCopy.addEventListener(
+              "click",
+              copyToClipboard("http://127.0.0.1:8888/" + responseKey)
+            );
+            shortlinkCreatedMessage.classList.remove("hidden");
+          }
+
+          setTimeout(function () {
+            elementToShow.classList.add("hidden");
+            submitButton.disabled = false;
+          }, 2000);
+        });
     }
 
     submitButton.addEventListener("click", createShortURL);
