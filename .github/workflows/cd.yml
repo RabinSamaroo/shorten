@@ -19,13 +19,8 @@ jobs:
 
       - name: Heroku Login
         run: heroku login
-<<<<<<< HEAD
         env:
           HEROKU_API_KEY: ${{secrets.HEROKU_API_KEY}}
-=======
-        with:
-          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
->>>>>>> a0576e7b20a519127f104f2ff4aa1c77d6e185ea
 
       - name: Heroku deploy
         run: git push heroku main
