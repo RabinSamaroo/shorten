@@ -13,6 +13,7 @@ const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("../public/docs/openapi.json");
 app.use("/docs/", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
+//Other setup
 app.use(bodyParser.json());
 app.use(express.static("public"));
 
@@ -66,7 +67,6 @@ app.get("/:shortlink([A-Za-z0-9_-]{1,32})", (req, res) => {
 });
 
 app.post("/new", (req, res) => {
-  //TODO test if value is missing
   const key: string = req.body.key ? req.body.key : nanoid(RANDOM_LENGTH); // Check to see if key was provided otherwise randomize the key
   const value: string = req.body.value;
   const keyIsValid: boolean = VALIDATOR.test(key);
@@ -88,6 +88,25 @@ app.post("/new", (req, res) => {
       console.log(error);
     }
   );
+});
+
+app.put("/:shortlink", (req, res) => {
+  const key: string = req.params.shortlink;
+  const value: string = req.body.value;
+  const keyIsValid: boolean = VALIDATOR.test(key);
+  const valueIsValid: boolean = isValidHttpUrl(value);
+
+  if (!(keyIsValid && valueIsValid)) {
+    res.status(400).send(new serverResponse(400, "key or value error", {}));
+    return;
+  }
+
+  db.update(key, value).then((data) => {
+    const response = data
+      ? new serverResponse(200, "document updated", data)
+      : new serverResponse(404, "document does not exist", data);
+    res.status(response.status).send(response);
+  });
 });
 
 app.listen(PORT, () => {
