@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon ./src/index.ts",
+    "prebuild": "tslint -c tslint.json -p tsconfig.json --fix",
     "test": "mocha --timeout 10000 --exit"
   },
   "author": "Rabin Samaroo",
@@ -24,6 +25,7 @@
     "mocha": "^8.2.1",
     "nodemon": "^2.0.7",
     "ts-node": "^9.1.1",
+    "tslint": "^6.1.3",
     "typescript": "^4.1.3"
   }
 }

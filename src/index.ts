@@ -13,11 +13,11 @@ const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("../public/docs/openapi.json");
 app.use("/docs/", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-//Other setup
+// Other setup
 app.use(bodyParser.json());
 app.use(express.static("public"));
 
-class serverResponse {
+class ServerResponse {
   status: number;
   message: string;
   data: object;
@@ -37,10 +37,10 @@ class serverResponse {
   }
 }
 
-function isValidHttpUrl(string: string) {
+function isValidHttpUrl(input: string) {
   let url;
   try {
-    url = new URL(string);
+    url = new URL(input);
   } catch (_) {
     return false;
   }
@@ -48,20 +48,20 @@ function isValidHttpUrl(string: string) {
 }
 
 app.get("/:shortlink([A-Za-z0-9_-]{1,32})", (req, res) => {
-  const acceptJson = req.headers["accept"] == "application/json";
+  const acceptJson = req.headers.accept === "application/json";
   db.read(req.params.shortlink).then(
     (data) => {
       if (acceptJson) {
         const response = data
-          ? new serverResponse(200, "document found", data)
-          : new serverResponse(404, "document not found", data);
+          ? new ServerResponse(200, "document found", data)
+          : new ServerResponse(404, "document not found", data);
         res.status(response.status).send(response);
       } else if (!acceptJson && data) {
         res.redirect(data.value);
       }
     },
     (error) => {
-      console.log(error);
+      // console.log(error);
     }
   );
 });
@@ -74,18 +74,18 @@ app.post("/new", (req, res) => {
 
   // If key or value is invalid
   if (!(keyIsValid && valueIsValid)) {
-    res.status(400).send(new serverResponse(400, "Key or value error", {}));
+    res.status(400).send(new ServerResponse(400, "Key or value error", {}));
     return;
   }
   db.create(key, value).then(
     (data) => {
       const response = data
-        ? new serverResponse(201, "document created", data)
-        : new serverResponse(409, "document already exists", data);
+        ? new ServerResponse(201, "document created", data)
+        : new ServerResponse(409, "document already exists", data);
       res.status(response.status).send(response);
     },
     (error) => {
-      console.log(error);
+      // console.log(error);
     }
   );
 });
@@ -97,19 +97,19 @@ app.put("/:shortlink", (req, res) => {
   const valueIsValid: boolean = isValidHttpUrl(value);
 
   if (!(keyIsValid && valueIsValid)) {
-    res.status(400).send(new serverResponse(400, "key or value error", {}));
+    res.status(400).send(new ServerResponse(400, "key or value error", {}));
     return;
   }
 
   db.update(key, value).then(
     (data) => {
       const response = data
-        ? new serverResponse(200, "document updated", data)
-        : new serverResponse(404, "document does not exist", data);
+        ? new ServerResponse(200, "document updated", data)
+        : new ServerResponse(404, "document does not exist", data);
       res.status(response.status).send(response);
     },
     (error) => {
-      console.log(error);
+      // console.log(error);
     }
   );
 });
@@ -118,21 +118,21 @@ app.delete("/:shortlink", (req, res) => {
   const key = req.params.shortlink;
   const keyIsValid: boolean = VALIDATOR.test(key);
   if (!keyIsValid) {
-    res.status(400).send(new serverResponse(400, "key error", {}));
+    res.status(400).send(new ServerResponse(400, "key error", {}));
     return;
   }
   db.del(key).then(
     () => {
-      res.send(new serverResponse(200, "document deleted", {}));
+      res.send(new ServerResponse(200, "document deleted", {}));
     },
     (error) => {
-      console.log(error);
+      // console.log(error);
     }
   );
 });
 
 app.listen(PORT, () => {
-  console.log(`⚡️[server]: Server is running at http://localhost:${PORT}`);
+  // console.log(`⚡️[server]: Server is running at http://localhost:${PORT}`);
 });
 
 module.exports = app; // for testing

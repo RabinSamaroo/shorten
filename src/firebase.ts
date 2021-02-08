@@ -1,7 +1,6 @@
 // Handle DB connections and methods
-//const admin = require("firebase-admin");
+// const admin = require("firebase-admin");
 import * as admin from "firebase-admin";
-import { ServerResponse } from "http";
 const serviceAccount = require("../SERVICE_ACCOUNT.json");
 const collectionName = "urls";
 
@@ -11,7 +10,7 @@ admin.initializeApp({
 
 const collection = admin.firestore().collection(collectionName);
 
-const read = async function read(key: string) {
+const read = async function readDoc(key: string) {
   const document = await collection.doc(key).get();
   if (document.exists) {
     return document.data(); // Document found
@@ -19,10 +18,10 @@ const read = async function read(key: string) {
   return; // Document not found
 };
 
-const create = async function create(key: string, value: string) {
+const create = async function createDoc(key: string, value: string) {
   const docRef = collection.doc(key);
   const document = await docRef.get();
-  const data = { key: key, value: value };
+  const data = { key, value };
 
   if (!document.exists) {
     await docRef.set(data);
@@ -32,10 +31,10 @@ const create = async function create(key: string, value: string) {
   }
 };
 
-const update = async function update(key: string, value: string) {
+const update = async function updateDoc(key: string, value: string) {
   const docRef = collection.doc(key);
   const document = await docRef.get();
-  const data = {key: key, value: value};
+  const data = {key, value};
   if (!document.exists) {
     return; // Document does not exist
   } else {
@@ -44,11 +43,11 @@ const update = async function update(key: string, value: string) {
   }
 };
 
-const del = async function delete_document(key:string) {
+const del = async function delDoc(key:string) {
   const document = await collection.doc(key).delete();
   return; // Document deleted
 };
 
 
-let db = { read, create, update, del};
+const db = { read, create, update, del};
 export { db as default };
