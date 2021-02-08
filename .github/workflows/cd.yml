@@ -17,13 +17,23 @@ jobs:
         env:
           SERVICE_ACCOUNT: ${{secrets.SERVICE_ACCOUNT}}
 
-      # Setup gcloud CLI
-      - uses: google-github-actions/setup-gcloud@master
+      - name: Setup Gcloud CLI
+        uses: google-github-actions/setup-gcloud@master
         with:
           service_account_key: ${{ secrets.SERVICE_ACCOUNT }}
           project_id: shorten-s
           export_default_credentials: true
       
-      - name: gcloud info
-        run: gcloud info
+      - name: Auth Service Account
+        run: gcloud auth activate-service-account --keyfile=SERVICE_ACCOUNT.json
 
+      - name: Configure Docker
+        run: gcloud auth configure-docker
+
+      - name: Build Image
+        run: docker build -t gcr.io/shorten-s/shorten-test .
+
+      - name: Push Image to GCR
+        run: docker push gcr.io/shorten-s/shorten-test
+      
+      
