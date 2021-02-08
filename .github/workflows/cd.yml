@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -17,9 +17,10 @@ jobs:
         env:
           SERVICE_ACCOUNT: ${{secrets.SERVICE_ACCOUNT}}
 
-      - name: Heroku Build and Deploy
-        uses: akhileshns/heroku-deploy@v3.10.9
-        with:
-          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          heroku_app_name: "shielded-ravine-12027"
-          heroku_email: "bamf.rabin@gmail.com"
+      - name: Heroku Login
+        run: heroku login
+        env:
+          HEROKU_API_KEY: ${{secrets.HEROKU_API_KEY}}
+
+      - name: Heroku deploy
+        run: git push heroku main
