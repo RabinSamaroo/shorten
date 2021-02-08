@@ -1,4 +1,3 @@
-
 {
   "openapi": "3.0.2",
   "info": {
@@ -137,15 +136,25 @@
           "content": {
             "application/json": {
               "schema": {
-                "required": [
-                  "key",
-                  "value"
-                ],
+                "required": ["key", "value"],
                 "allOf": [
                   {
                     "$ref": "#/components/schemas/Data"
                   }
                 ]
+              },
+              "examples": {
+                "New With Random Key": {
+                  "value": {
+                    "value": "https://cronitor.io/cron-job-monitoring?utm_source=crontabguru&utm_campaign=cronitor"
+                  }
+                },
+                "New With Defined Key": {
+                  "value": {
+                    "key": "pancake",
+                    "value": "https://swagger.io/tools/swagger-ui/"
+                  }
+                }
               }
             }
           }
@@ -244,9 +253,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "required": [
-                  "value"
-                ],
+                "required": ["value"],
                 "allOf": [
                   {
                     "$ref": "#/components/schemas/Data"
