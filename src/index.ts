@@ -1,5 +1,6 @@
 import db from "./firebase"; // Back end connection
 import express from "express";
+import cors from "cors";
 import { nanoid } from "nanoid";
 import * as bodyParser from "body-parser";
 
@@ -14,6 +15,7 @@ const swaggerDocument = require("../public/docs/openapi.json");
 app.use("/docs/", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Other setup
+app.use(cors())
 app.use(bodyParser.json());
 app.use(express.static("public"));
 
