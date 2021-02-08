@@ -2,7 +2,7 @@
 let chai = require("chai");
 let chaiHttp = require("chai-http");
 const { before } = require("mocha");
-let server = require("../index");
+let server = require("../dist/index");
 //let should = chai.should();
 let expect = chai.expect;
 
@@ -27,7 +27,7 @@ describe("Tests", () => {
         .send(data)
         .end((err, res) => {
           expect(err).to.be.null;
-          expect(res).to.have.status(200);
+          expect(res).to.have.status(201);
           expect(JSON.parse(res.text).status).to.be.eql(
             201
           );
@@ -90,7 +90,7 @@ describe("Tests", () => {
         .set("accept", "application/json")
         .end((err, res) => {
           expect(err).to.be.null;
-          expect(res).to.have.status(200);
+          expect(res).to.have.status(404);
           expect(JSON.parse(res.text).status).to.be.eql(404);
           done();
         });

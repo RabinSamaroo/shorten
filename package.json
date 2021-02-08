@@ -2,12 +2,12 @@
   "name": "shorten",
   "version": "0.0.0",
   "description": "simple url shortener",
-  "main": "index.js",
+  "main": "./dist/index.js",
   "scripts": {
     "dev": "nodemon ./src/index.ts",
     "prebuild": "tslint -c tslint.json -p tsconfig.json --fix",
     "build": "tsc",
-    "start": "node ./dist/index.js",
+    "start": "node .",
     "test": "mocha --timeout 10000 --exit"
   },
   "author": "Rabin Samaroo",
