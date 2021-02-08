@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "nodemon ./src/index.ts",
     "prebuild": "tslint -c tslint.json -p tsconfig.json --fix",
+    "build": "tsc",
+    "start": "node ./dist/index.js",
     "test": "mocha --timeout 10000 --exit"
   },
   "author": "Rabin Samaroo",
