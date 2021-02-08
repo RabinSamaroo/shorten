@@ -18,7 +18,7 @@ jobs:
           SERVICE_ACCOUNT: ${{secrets.SERVICE_ACCOUNT}}
 
       - name: Heroku Login
-        run: heroku login
+        run: heroku container:login
         env:
           HEROKU_API_KEY: ${{secrets.HEROKU_API_KEY}}
 
