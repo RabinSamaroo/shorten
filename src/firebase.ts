@@ -44,5 +44,11 @@ const update = async function update(key: string, value: string) {
   }
 };
 
-let db = { read, create, update };
+const del = async function delete_document(key:string) {
+  const document = await collection.doc(key).delete();
+  return; // Document deleted
+};
+
+
+let db = { read, create, update, del};
 export { db as default };

@@ -101,12 +101,34 @@ app.put("/:shortlink", (req, res) => {
     return;
   }
 
-  db.update(key, value).then((data) => {
-    const response = data
-      ? new serverResponse(200, "document updated", data)
-      : new serverResponse(404, "document does not exist", data);
-    res.status(response.status).send(response);
-  });
+  db.update(key, value).then(
+    (data) => {
+      const response = data
+        ? new serverResponse(200, "document updated", data)
+        : new serverResponse(404, "document does not exist", data);
+      res.status(response.status).send(response);
+    },
+    (error) => {
+      console.log(error);
+    }
+  );
+});
+
+app.delete("/:shortlink", (req, res) => {
+  const key = req.params.shortlink;
+  const keyIsValid: boolean = VALIDATOR.test(key);
+  if (!keyIsValid) {
+    res.status(400).send(new serverResponse(400, "key error", {}));
+    return;
+  }
+  db.del(key).then(
+    () => {
+      res.send(new serverResponse(200, "document deleted", {}));
+    },
+    (error) => {
+      console.log(error);
+    }
+  );
 });
 
 app.listen(PORT, () => {
