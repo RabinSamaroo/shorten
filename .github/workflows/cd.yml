@@ -17,21 +17,11 @@ jobs:
         env:
           SERVICE_ACCOUNT: ${{secrets.SERVICE_ACCOUNT}}
 
-      - name: Heroku Login
-        env:
-          HEROKU_API_KEY: ${{secrets.HEROKU_API_KEY}}
-        run: heroku login
 
-      - name: Build and push
-        env:
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-        run: heroku container:push -a shielded-ravine-12027 web
+      - uses: RafikFarhad/push-to-gcr-github-action@v3.0.2
+        with:
+          gcloud_service_key: ${{ secrets.SERVICE_ACCOUNT }}
+          registry: gcr.io
+          project_id: shorten-s
+          image_name: shorten-image-test
 
-      - name: Release
-        env:
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-        run: heroku container:release -a shielded-ravine-12027 web 
-
-
-#      - name: Docker Build
-#        run: docker build -t shorten .
