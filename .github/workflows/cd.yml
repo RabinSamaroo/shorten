@@ -23,6 +23,4 @@ jobs:
           HEROKU_API_KEY: ${{secrets.HEROKU_API_KEY}}
 
       - name: Heroku deploy
-        run: git push heroku main
-        env:
-          HEROKU_APP: shielded-ravine-12027
+        run: git push https://git.heroku.com/shielded-ravine-12027.git main
