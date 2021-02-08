@@ -22,5 +22,5 @@ jobs:
         env:
           HEROKU_API_KEY: ${{secrets.HEROKU_API_KEY}}
 
-      - name: Heroku deploy
-        run: git push https://git.heroku.com/shielded-ravine-12027.git main
+      - name: Docker Build
+        run: docker build -t shorten .
