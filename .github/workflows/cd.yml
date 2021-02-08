@@ -17,11 +17,10 @@ jobs:
         env:
           SERVICE_ACCOUNT: ${{secrets.SERVICE_ACCOUNT}}
 
-
-      - uses: RafikFarhad/push-to-gcr-github-action@v3.0.2
+      # Setup gcloud CLI
+      - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
         with:
-          gcloud_service_key: ${{ secrets.SERVICE_ACCOUNT }}
-          registry: gcr.io
+          service_account_key: ${{ secrets.SERVICE_ACCOUNT }}
           project_id: shorten-s
-          image_name: shorten-image-test
+          export_default_credentials: true
 
