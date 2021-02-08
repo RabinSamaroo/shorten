@@ -22,5 +22,16 @@ jobs:
         env:
           HEROKU_API_KEY: ${{secrets.HEROKU_API_KEY}}
 
-      - name: Docker Build
-        run: docker build -t shorten .
+      - name: Build and push
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        run: heroku container:push -a shielded-ravine-12027 web
+
+      - name: Release
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        run: heroku container:release -a shielded-ravine-12027 web 
+
+
+#      - name: Docker Build
+#        run: docker build -t shorten .
