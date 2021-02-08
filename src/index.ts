@@ -132,7 +132,8 @@ app.delete("/:shortlink", (req, res) => {
 });
 
 app.listen(PORT, () => {
-  // console.log(`⚡️[server]: Server is running at http://localhost:${PORT}`);
+  // tslint:disable-next-line:no-console
+  console.log(`⚡️[server]: Server is running at http://localhost:${PORT}`);
 });
 
 module.exports = app; // for testing

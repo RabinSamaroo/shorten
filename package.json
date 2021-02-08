@@ -5,7 +5,7 @@
   "main": "./dist/index.js",
   "scripts": {
     "dev": "nodemon ./src/index.ts",
-    "prebuild": "tslint -c tslint.json -p tsconfig.json --fix",
+    "lint": "tslint -c tslint.json -p tsconfig.json --fix",
     "build": "tsc",
     "start": "node .",
     "test": "mocha --timeout 10000 --exit"
