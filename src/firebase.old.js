@@ -1,6 +1,6 @@
 // Handle DB connections and methods
 const admin = require("firebase-admin");
-const serviceAccount = require("./SERVICE_ACCOUNT.json");
+const serviceAccount = require("../SERVICE_ACCOUNT.json");
 const collection = "urls";
 
 admin.initializeApp({
