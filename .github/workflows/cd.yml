@@ -1,7 +1,6 @@
 name: CD
 
 on:
-
   workflow_dispatch:
 
 jobs:
@@ -11,18 +10,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-        
-      - name: Setup Node
-        uses: actions/setup-node@v2.1.4
 
-      - name: Install
-        run: npm install
+      - name: Create SERVICE_ACCOUNT.json
+        run: 'echo "$SERVICE_ACCOUNT" > SERVICE_ACCOUNT.json'
+        shell: bash
+        env:
+          SERVICE_ACCOUNT: ${{secrets.SERVICE_ACCOUNT}}
 
-      - name: Lint
-        run: npm run lint
-
-      - name: Build
-        run: npm run build
-      
-      - name: Run
-        run: npm run start
+      - name: Heroku Build and Deploy
+        uses: akhileshns/heroku-deploy@v3.10.9
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: "shielded-ravine-12027"
+          heroku_email: "bamf.rabin@gmail.com"
