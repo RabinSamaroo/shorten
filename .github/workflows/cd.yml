@@ -18,9 +18,12 @@ jobs:
           SERVICE_ACCOUNT: ${{secrets.SERVICE_ACCOUNT}}
 
       # Setup gcloud CLI
-      - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+      - uses: google-github-actions/setup-gcloud@master
         with:
           service_account_key: ${{ secrets.SERVICE_ACCOUNT }}
           project_id: shorten-s
           export_default_credentials: true
+      
+      - name: gcloud info
+        run: gcloud info
 
