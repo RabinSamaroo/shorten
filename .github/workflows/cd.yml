@@ -1,26 +1,47 @@
 name: CD
 
 on:
+  #  push:
+  #    branches:
+  #      - "main"
   workflow_dispatch:
 
 jobs:
-  deploy:
+  build-gcr:
     runs-on: ubuntu-latest
 
     steps:
+
+      # Clone git repo
       - name: Checkout
         uses: actions/checkout@v2
 
+      # Create Service account for firebase
       - name: Create SERVICE_ACCOUNT.json
         run: 'echo "$SERVICE_ACCOUNT" > SERVICE_ACCOUNT.json'
         shell: bash
         env:
-          SERVICE_ACCOUNT: ${{secrets.SERVICE_ACCOUNT}}
+          SERVICE_ACCOUNT: ${{ secrets.SERVICE_ACCOUNT }}
 
-      - name: Heroku Login
-        run: heroku login
+      - name: Setup Gcloud CLI
+        uses: google-github-actions/setup-gcloud@master
+        with:
+          service_account_key: ${{ secrets.DEVOPS_SERVICE_ACCOUNT }}
+          project_id: ${{ secrets.GCP_PROJECT }}
+          export_default_credentials: true
+
+      # Login to gcr with docker
+      - name: Configure Docker
+        #        run: gcloud auth configure-docker # Googles preffered method not working
+        run: echo "$DEVOPS_SERVICE_ACCOUNT" | sudo docker login -u _json_key --password-stdin https://gcr.io
         env:
-          HEROKU_API_KEY: ${{secrets.HEROKU_API_KEY}}
+          DEVOPS_SERVICE_ACCOUNT: ${{ secrets.DEVOPS_SERVICE_ACCOUNT }}
 
-      - name: Heroku deploy
-        run: git push https://git.heroku.com/shielded-ravine-12027.git main
+      - name: Build Image
+        run: docker build -t gcr.io/${{ secrets.GCP_PROJECT }}/${{ secrets.GCR_DEV_IMAGE }} .
+
+      - name: Push Image to GCR
+        run: docker push gcr.io/${{ secrets.GCP_PROJECT }}/${{ secrets.GCR_DEV_IMAGE }}
+
+      - name: Deploy revision to Cloud Run
+        run: gcloud run deploy ${{ secrets.GCR_DEV_IMAGE }} --image gcr.io/${{ secrets.GCP_PROJECT }}/${{ secrets.GCR_DEV_IMAGE }} --platform managed --allow-unauthenticated --region=us-east1
