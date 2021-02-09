@@ -20,13 +20,14 @@ jobs:
       - name: Setup Gcloud CLI
         uses: google-github-actions/setup-gcloud@master
         with:
-          service_account_key: ${{ secrets.SERVICE_ACCOUNT }}
+          service_account_key: ${{ secrets.DEVOPS_SERVICE_ACCOUNT }}
           project_id: shorten-s
           export_default_credentials: true
       
       - name: Configure Docker
 #        run: gcloud auth configure-docker # Googles preffered method does not work
-        run: docker login -u _json_key -p $DEVOPS_SERVICE_ACCOUNT https://gcr.io
+#        run: docker login -u _json_key -p $DEVOPS_SERVICE_ACCOUNT https://gcr.io
+        run: echo "$DEVOPS_SERVICE_ACCOUNT" | sudo docker login -u _json_key --password-stdin https://gcr.io
         env:
           DEVOPS_SERVICE_ACCOUNT: ${{secrets.DEVOPS_SERVICE_ACCOUNT}}
 
