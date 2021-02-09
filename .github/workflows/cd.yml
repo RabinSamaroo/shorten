@@ -43,3 +43,5 @@ jobs:
       - name: Push Image to GCR
         run: docker push gcr.io/${{ secrets.GCP_PROJECT }}/${{ secrets.GCR_DEV_IMAGE }}
 
+      - name: Deploy revision to Cloud Run
+        run: gcloud run deploy ${{ secrets.GCR_DEV_IMAGE }} --image gcr.io/${{ secrets.GCR_DEV_IMAGE }}/${{ secrets.GCR_DEV_IMAGE }} --platform managed --allow-unauthenticated --region=us-east1
