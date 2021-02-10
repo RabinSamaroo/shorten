@@ -289,10 +289,9 @@
                           </div>
 
                           <div class="mt-1 flex rounded-md shadow-sm">
-                            <span
+                            <span id="url-origin"
                               class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 sm:text-sm"
                             >
-                              http://127:7777/
                             </span>
                             <input
                               type="text"
@@ -722,6 +721,9 @@
     </div>
   </body>
   <script>
+    // Display origin in UI
+    document.getElementById("url-origin").innerHTML = window.location.origin + "/"
+
     // Burger Bar Functionality
     const mobileMenu = document.getElementById("mobile-menu");
     const mobileBurger = document.getElementById("mobile-menu-button");
@@ -815,7 +817,7 @@
       shortlinkErrorMessage.classList.add("hidden");
 
       // API Call
-      const url = "http://127.0.0.1:8888/new";
+      const url = window.location.origin + "/new";
       const options = {
         method: "POST",
         headers: {
@@ -839,7 +841,7 @@
           if (responseBody.status == 201) {
             shortlinkCopy.addEventListener(
               "click",
-              copyToClipboard("http://127.0.0.1:8888/" + responseKey)
+              copyToClipboard(window.location.origin + "/" + responseKey)
             );
             shortlinkCreatedMessage.classList.remove("hidden");
           } else if (responseBody.status == 409) {
