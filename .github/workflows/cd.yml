@@ -30,6 +30,10 @@ jobs:
           project_id: ${{ secrets.GCP_PROJECT }}
           export_default_credentials: true
 
+      # Edit Openapi config with active gcloud service
+      - name: Edit Openapi.json
+        run: URI=$(gcloud run services list --platform managed | awk 'NR==2 {print $4}' | perl -pe 's/\//\\\//g') && sed -i -e "s/GCP_SERVER/$URI/g" public/docs/openapi.json
+
       # Login to gcr with docker
       - name: Configure Docker
         #        run: gcloud auth configure-docker # Googles preffered method not working
