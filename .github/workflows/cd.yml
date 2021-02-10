@@ -32,11 +32,12 @@ jobs:
 
       # Edit Openapi config with active gcloud service
       - name: Edit Openapi.json
+        # This oneliner pulls the service list from gcloud, gets the current running URL, escapes the URL using perl, and replaces it in openapi.json
         run: URI=$(gcloud run services list --platform managed | awk 'NR==2 {print $4}' | perl -pe 's/\//\\\//g') && sed -i -e "s/GCP_SERVER/$URI/g" public/docs/openapi.json
 
       # Login to gcr with docker
       - name: Configure Docker
-        #        run: gcloud auth configure-docker # Googles preffered method not working
+        # run: gcloud auth configure-docker # Googles preffered method not working
         run: echo "$DEVOPS_SERVICE_ACCOUNT" | sudo docker login -u _json_key --password-stdin https://gcr.io
         env:
           DEVOPS_SERVICE_ACCOUNT: ${{ secrets.DEVOPS_SERVICE_ACCOUNT }}

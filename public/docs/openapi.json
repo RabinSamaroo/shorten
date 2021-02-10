@@ -7,6 +7,10 @@
   },
   "servers": [
     {
+      "url": "GCP_SERVER",
+      "description": "Cloud Server"
+    },
+    {
       "url": "http://127.0.0.1:8888",
       "description": "Local Server"
     }
