@@ -1,14 +1,11 @@
 FROM node:14
+ENV NODE_ENV=production
 WORKDIR /
 
 COPY package*.json ./
 RUN npm ci
 
 COPY . .
-#COPY /public ./
-#COPY /src ./
-#COPY /tsconfig.json ./
-#COPY /tslint.json ./
 
 RUN npm run build
 
